@@ -7,10 +7,10 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-// Endpoint simple para probar el backend
+// Endpoint simple para probar el backend (cambio para probar pipeline)
 app.get("/api/saludo", (req, res) => {
   res.json({ 
-    mensaje: "Hola desde el backend con Express + CI/CD 🚀",
+    mensaje: "Cambio de mensaje para probar el pipeline CI/CD 🚧",
     timestamp: new Date().toISOString()
   });
 });
