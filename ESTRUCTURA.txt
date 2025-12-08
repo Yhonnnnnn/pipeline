@@ -1,0 +1,158 @@
+📦 PROYECTO PIPELINE CI/CD - ESTRUCTURA COMPLETA
+═══════════════════════════════════════════════════════════════
+
+📂 pipeline/
+│
+├── 📁 .github/workflows/
+│   └── ci-cd.yml ........................ Pipeline GitHub Actions
+│                                         - Job 1: CI (tests, lint, build)
+│                                         - Job 2: Deploy Frontend (GitHub Pages)
+│                                         - Job 3: Build Docker Backend
+│
+├── 📁 backend/
+│   ├── 📁 src/
+│   │   └── index.js ..................... API REST con Express
+│   │                                     - GET /api/saludo
+│   │                                     - GET /health
+│   ├── package.json .................... Dependencies & scripts
+│   ├── Dockerfile ...................... Imagen Docker (Node 20-alpine)
+│   └── .dockerignore ................... Archivos ignorados en build
+│
+├── 📁 frontend/
+│   ├── 📁 src/
+│   │   ├── App.jsx .................... Componente principal React
+│   │   │                              - Fetch de API
+│   │   │                              - Loading state
+│   │   ├── main.jsx .................. Entry point React
+│   │   ├── App.css ................... Estilos del componente
+│   │   └── index.css ................. Estilos globales
+│   ├── index.html .................... Template HTML
+│   ├── package.json .................. Dependencies & scripts
+│   └── vite.config.js ................ Configuración Vite + React
+│
+├── .gitignore .......................... Git ignore patterns
+├── .env.example ....................... Variables de entorno (plantilla)
+├── docker-compose.yml ................. Docker Compose (desarrollo)
+├── README.md ........................... Documentación completa
+└── GUIA_RAPIDA.md ..................... Guía de inicio rápido
+
+═══════════════════════════════════════════════════════════════
+
+🔄 FLUJO DEL PIPELINE CI/CD
+═══════════════════════════════════════════════════════════════
+
+1️⃣ TRIGGER: Push a rama 'main'
+   ↓
+2️⃣ JOB: CI (Integración Continua)
+   ├─ Setup Node.js v20
+   ├─ Backend: npm install → npm test → npm lint
+   ├─ Frontend: npm install → npm test → npm lint
+   ├─ Frontend: npm run build
+   └─ Upload: artefacto frontend/dist
+   ↓
+3️⃣ JOB: Deploy Frontend (depende de CI)
+   ├─ Download artefacto
+   └─ Deploy a GitHub Pages
+   ↓
+4️⃣ JOB: Build & Push Docker (depende de CI)
+   ├─ Login Docker Hub
+   ├─ Build imagen: usuario/backend-express-ci-cd:latest
+   ├─ Tag versión: usuario/backend-express-ci-cd:v1.0.0
+   └─ Push a Docker Hub
+   
+═══════════════════════════════════════════════════════════════
+
+🎯 ENDPOINTS & PUERTOS
+═══════════════════════════════════════════════════════════════
+
+Backend (Express):
+  - Desarrollo: http://localhost:4000
+  - Producción: Tu servidor/contenedor Docker
+  - Endpoints:
+    • GET /api/saludo → {"mensaje": "..."}
+    • GET /health → {"status": "Backend is running!"}
+
+Frontend (Vite + React):
+  - Desarrollo: http://localhost:5173
+  - Producción: https://tu-usuario.github.io/repo
+  - Build: frontend/dist/
+
+═══════════════════════════════════════════════════════════════
+
+📋 CONFIGURACIÓN REQUERIDA EN GITHUB
+═══════════════════════════════════════════════════════════════
+
+1. Crear 2 secretos en Settings → Secrets and variables → Actions:
+   
+   ✓ DOCKERHUB_USERNAME = tu_usuario_dockerhub
+   ✓ DOCKERHUB_TOKEN = tu_token_de_acceso
+   
+2. Activar GitHub Pages en Settings → Pages:
+   
+   ✓ Source: gh-pages (rama automática)
+   ✓ Domain: https://tu-usuario.github.io/repo
+
+═══════════════════════════════════════════════════════════════
+
+🚀 INICIALIZACIÓN RÁPIDA
+═══════════════════════════════════════════════════════════════
+
+# 1. Clonar repositorio
+cd pipeline
+
+# 2. Instalar dependencias
+cd backend && npm install && cd ../frontend && npm install && cd ..
+
+# 3. Ejecutar en desarrollo
+Terminal 1: cd backend && npm run dev
+Terminal 2: cd frontend && npm run dev
+
+# 4. Hacer cambios y pushear
+git add .
+git commit -m "Cambios"
+git push
+
+═══════════════════════════════════════════════════════════════
+
+✨ CARACTERÍSTICAS IMPLEMENTADAS
+═══════════════════════════════════════════════════════════════
+
+✅ Backend Express
+   • API REST simple
+   • CORS configurado
+   • Package.json con scripts
+   • Dockerfile optimizado (Alpine)
+   • Health check
+
+✅ Frontend Vite + React
+   • Componente principal con fetch
+   • Estilos modernos (gradientes)
+   • Interfaz responsive
+   • Configuración Vite
+
+✅ GitHub Actions Pipeline
+   • CI automático (tests, lint, build)
+   • CD Frontend (GitHub Pages)
+   • CD Backend (Docker Hub)
+   • Artefactos de build
+   • 3 jobs paralelos
+
+✅ Documentación
+   • README.md completo
+   • GUIA_RAPIDA.md
+   • .env.example
+   • docker-compose.yml
+
+═══════════════════════════════════════════════════════════════
+
+📝 SIGUIENTES PASOS
+═══════════════════════════════════════════════════════════════
+
+1. Ir a GitHub y crear repositorio público
+2. Copiar git commands y ejecutar en pipeline/
+3. Crear secretos DOCKERHUB_* en Settings
+4. Activar GitHub Pages
+5. Hacer un cambio y push
+6. Ver Actions ejecutándose 🎉
+
+═══════════════════════════════════════════════════════════════
