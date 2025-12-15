@@ -7,11 +7,12 @@ on:
     branches: ["main"]
 
 jobs:
-  # =========================
+  # ===========================
   # JOB 1: INTEGRACIÓN CONTINUA
-  # =========================
+  # ===========================
   ci:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
@@ -56,16 +57,16 @@ jobs:
         with:
           name: frontend-dist
           path: frontend/dist
-          retention-days: 1
 
-  # =========================
+  # ===========================
   # JOB 2: DEPLOY FRONTEND (CD)
-  # =========================
+  # ===========================
   deploy_frontend:
     needs: ci
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
@@ -82,24 +83,27 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
 
-  # =========================
+  # ===========================
   # JOB 3: IMAGEN DOCKER BACKEND
-  # =========================
+  # ===========================
   build_and_push_backend:
     needs: ci
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      # AQUÍ ESTABA EL ERROR: Los nombres deben coincidir con tus Secretos de GitHub
       - name: Login en Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Construir y Subir imagen Docker
+      - name: Construir imagen Docker del backend
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-express-ci-cd:latest ./backend
-          docker push ${{ secrets.DOCKER_USERNAME }}/backend-express-ci-cd:latest
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest ./backend
+
+      - name: Enviar imagen a Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest
